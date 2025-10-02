@@ -34,7 +34,7 @@ export function CoachGuard({ children }: { children: React.ReactNode }) {
   }
   
   // The user exists, but we need to check their role.
-  // If the coachRole document does not exist (is null), they are not a coach.
+  // If the coachRole document does not exist (useDoc returns null for data), they are not a coach.
   if (!coachRole) {
     router.replace("/");
     return (
