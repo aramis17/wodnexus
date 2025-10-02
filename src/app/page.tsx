@@ -16,9 +16,10 @@ import { es } from 'date-fns/locale';
 
 const getWodForDate = (date: Date) => {
   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const zonedDate = toZonedTime(date, userTimeZone);
   return wods.find((wod) => {
     const wodDate = toZonedTime(`${wod.date}T00:00:00`, userTimeZone);
-    return isSameDay(date, wodDate);
+    return isSameDay(zonedDate, wodDate);
   });
 }
 
@@ -44,9 +45,14 @@ const DayNavigator = ({ selectedDate, onDateChange }: { selectedDate: Date, onDa
       <Button variant="ghost" size="icon" onClick={handlePreviousDay} aria-label="Día anterior">
         <ArrowLeft className="h-5 w-5" />
       </Button>
-      <div className="text-center">
-        <div className="font-bold text-lg text-primary">
-          {isToday ? "Hoy" : format(selectedDate, 'EEEE', { locale: es })}
+      <div className="text-center flex flex-col items-center">
+        <div className="font-bold text-lg text-primary flex items-center gap-2">
+          <span>{isToday ? "Hoy" : format(selectedDate, 'EEEE', { locale: es })}</span>
+          {!isToday && (
+             <Button variant="ghost" size="icon" onClick={handleGoToToday} aria-label="Ir a hoy" className="h-7 w-7">
+              <Undo2 className="h-4 w-4" />
+            </Button>
+           )}
         </div>
         <div className="text-sm text-muted-foreground">
           {format(selectedDate, 'd MMMM, yyyy', { locale: es })}
@@ -55,11 +61,6 @@ const DayNavigator = ({ selectedDate, onDateChange }: { selectedDate: Date, onDa
       <Button variant="ghost" size="icon" onClick={handleNextDay} aria-label="Día siguiente">
         <ArrowRight className="h-5 w-5" />
       </Button>
-       {!isToday && (
-         <Button variant="ghost" size="icon" onClick={handleGoToToday} aria-label="Ir a hoy" className="absolute right-16">
-          <Undo2 className="h-5 w-5" />
-        </Button>
-       )}
     </div>
   );
 }
@@ -133,5 +134,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
