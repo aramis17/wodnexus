@@ -31,7 +31,6 @@ import {
 interface WodDisplayProps {
   wod: Wod | undefined;
   selectedDate: Date | undefined;
-  isLoading: boolean;
 }
 
 const getSectionIcon = (title: string) => {
@@ -44,29 +43,7 @@ const getSectionIcon = (title: string) => {
   return Info;
 };
 
-export function WodDisplay({ wod, selectedDate, isLoading }: WodDisplayProps) {
-  if (isLoading) {
-    return (
-      <Card className="w-full">
-        <CardHeader>
-          <Skeleton className="h-4 w-1/3" />
-          <Skeleton className="h-8 w-2/3" />
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <Skeleton className="h-20 w-full" />
-          <div className="space-y-4">
-            <Skeleton className="h-12 w-full" />
-            <Skeleton className="h-24 w-full" />
-          </div>
-          <div className="space-y-4">
-            <Skeleton className="h-12 w-full" />
-            <Skeleton className="h-24 w-full" />
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
+export function WodDisplay({ wod, selectedDate }: WodDisplayProps) {
   if (!wod || !selectedDate) {
     return (
       <Card className="flex flex-col items-center justify-center text-center p-12 min-h-[400px]">

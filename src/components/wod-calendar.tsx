@@ -6,14 +6,12 @@ import { es } from "date-fns/locale";
 import type { Wod } from "@/lib/types";
 import { toZonedTime } from "date-fns-tz";
 import { useMemo } from "react";
-import { Skeleton } from "./ui/skeleton";
 
 interface WodCalendarProps {
   selected: Date | undefined;
   onSelect: (date: Date | undefined) => void;
   wods: Wod[];
   className?: string;
-  isLoading: boolean;
 }
 
 export function WodCalendar({
@@ -21,17 +19,12 @@ export function WodCalendar({
   onSelect,
   wods,
   className,
-  isLoading
 }: WodCalendarProps) {
   const wodDates = useMemo(() => {
-    if (isLoading || !wods) return [];
+    if (!wods) return [];
     const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     return wods.map((wod) => toZonedTime(`${wod.date}T00:00:00`, userTimeZone));
-  }, [wods, isLoading]);
-
-  if (isLoading) {
-    return <Skeleton className={cn("h-[300px] w-full", className)} />;
-  }
+  }, [wods]);
 
   return (
     <div className={cn(className)}>

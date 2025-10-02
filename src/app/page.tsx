@@ -1,6 +1,5 @@
-
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WodCalendar } from "@/components/wod-calendar";
 import { WodDisplay } from "@/components/wod-display";
 import { isSameDay, addDays, subDays } from "date-fns";
@@ -11,8 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Button } from "@/components/ui/button";
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection } from "firebase/firestore";
+import { wods } from "@/lib/wods-data";
 import type { Wod } from "@/lib/types";
 
 
@@ -63,18 +61,15 @@ const DayNavigator = ({ selectedDate, onDateChange }: { selectedDate: Date, onDa
 
 
 export default function Home() {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const [isClient, setIsClient] = useState(false);
   const isMobile = useIsMobile();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  const firestore = useFirestore();
-
-  const wodsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return collection(firestore, 'wods');
-  }, [firestore]);
-
-  const { data: wods, isLoading: isLoadingWods } = useCollection<Wod>(wodsQuery);
+  useEffect(() => {
+    setIsClient(true);
+    setSelectedDate(new Date());
+  }, []);
 
   const getWodForDate = (date: Date) => {
     if (!wods) return undefined;
@@ -93,6 +88,10 @@ export default function Home() {
     if(date) {
       setIsPopoverOpen(false);
     }
+  }
+
+  if (!isClient) {
+    return null; 
   }
 
   return (
@@ -121,14 +120,13 @@ export default function Home() {
                       selected={selectedDate}
                       onSelect={handleDateSelect}
                       wods={wods || []}
-                      isLoading={isLoadingWods}
                       className="bg-card p-2 rounded-lg shadow-sm"
                     />
                   </PopoverContent>
                 </Popover>
              </div>
              <div className="w-full">
-                <WodDisplay wod={selectedWod} selectedDate={selectedDate} isLoading={isLoadingWods} />
+                <WodDisplay wod={selectedWod} selectedDate={selectedDate} />
              </div>
            </div>
         ) : (
@@ -138,12 +136,11 @@ export default function Home() {
                 selected={selectedDate}
                 onSelect={setSelectedDate}
                 wods={wods || []}
-                isLoading={isLoadingWods}
                 className="bg-card p-2 rounded-lg shadow-sm"
               />
             </div>
             <div className="md:col-span-2 lg:col-span-3">
-             <WodDisplay wod={selectedWod} selectedDate={selectedDate} isLoading={isLoadingWods} />
+             <WodDisplay wod={selectedWod} selectedDate={selectedDate} />
             </div>
           </div>
         )}
