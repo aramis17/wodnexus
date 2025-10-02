@@ -39,6 +39,7 @@ export function WodCalendar({
             day_today: "bg-accent text-accent-foreground",
             day_outside: "text-muted-foreground opacity-50",
             day_disabled: "text-muted-foreground opacity-50",
+            day_hasWod: "rdp-day_hasWod",
         }}
       />
     </div>
