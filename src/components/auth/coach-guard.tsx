@@ -17,8 +17,9 @@ export function CoachGuard({ children }: { children: ReactNode }) {
   
   const { data: coachRole, isLoading: isRoleLoading } = useDoc(coachRoleRef);
 
+  const isLoading = isUserLoading || isRoleLoading;
+
   useEffect(() => {
-    const isLoading = isUserLoading || isRoleLoading;
     if (!isLoading) {
       if (!user) {
         // No user, redirect to login
@@ -31,7 +32,6 @@ export function CoachGuard({ children }: { children: ReactNode }) {
     }
   }, [user, coachRole, isLoading, router]);
 
-  const isLoading = isUserLoading || isRoleLoading;
   if (isLoading || !user || !coachRole) {
     return (
       <div className="flex h-screen items-center justify-center">
