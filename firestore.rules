@@ -1,121 +1,26 @@
-/**
- * @fileoverview Firestore Security Rules for the application.
- *
- * Core Philosophy:
- * This ruleset prioritizes security by enforcing role-based access control for creating WODs,
- * allowing any logged-in user to read WODs, and restricting all other operations to authorized coaches.
- *
- * Data Structure:
- * - /wods/{wodId}: Stores WOD documents.
- * - /coaches/{coachId}: Stores public coach profiles.
- * - /roles_coach/{uid}: Stores coach role assignments; the document ID is the user's UID.
- *
- * Key Security Decisions:
- * - Public read access to /wods/{wodId} is allowed.
- * - Only users with a 'coach' role can create, update, or delete WODs.
- * - All users can read coach profiles.
- * - Only a user whose UID matches the document ID can create their own coach profile.
- * - Listing users is disallowed, and users can only update or delete their own profiles.
- *
- * Denormalization for Authorization:
- *  - The `Wod` entity has a `coachId` field, which is used to associate a WOD with its creator.
- */
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    /**
-     * @description Grants public read access to WODs and restricts write access to authorized coaches.
-     * @path /wods/{wodId}
-     * @allow (get, list): Any user can read WODs.
-     * @allow (create): Only a user with a 'coach' role can create a WOD and the coachId on the WOD must match their UID.
-     * @allow (update, delete): Only the coach who created the WOD can update or delete it.
-     * @deny (create): A non-coach user attempts to create a WOD.
-     * @deny (update, delete): A non-coach user or a coach who did not create the WOD attempts to modify it.
-     * @principle Allows public reads, restricts writes to coaches who created the WOD.
-     */
     match /wods/{wodId} {
-      allow get: if true;
-      allow list: if true;
-      allow create: if isSignedIn() && isCoach(request.auth.uid) && request.resource.data.coachId == request.auth.uid;
-      allow update: if isSignedIn() && isExistingOwner(resource.data.coachId);
-      allow delete: if isSignedIn() && isExistingOwner(resource.data.coachId);
+      // Allow anyone to read the list of wods or a single wod document.
+      allow get, list: if true;
+      
+      // Allow only authenticated users with a 'coach' role to write.
+      allow write: if request.auth != null && exists(/databases/$(database)/documents/roles_coach/$(request.auth.uid));
     }
 
-    /**
-     * @description Grants read access to coach profiles and restricts write access to the profile owner.
-     * @path /coaches/{coachId}
-     * @allow (get, list): Any user can read coach profiles.
-     * @allow (create): A user can create their own coach profile if the document ID matches their UID.
-     * @allow (update, delete): A user can only update or delete their own coach profile.
-     * @deny (create): A user attempts to create a coach profile with an ID that does not match their UID.
-     * @deny (update, delete): A user attempts to modify or delete someone else's coach profile.
-     * @principle Enforces document ownership for coach profiles.
-     */
     match /coaches/{coachId} {
-      allow get: if true;
-      allow list: if true;
-      allow create: if isSignedIn() && isOwner(coachId);
-      allow update: if isSignedIn() && isExistingOwner(coachId);
-      allow delete: if isSignedIn() && isExistingOwner(coachId);
+        // Anyone can read coach profiles.
+        allow read: if true;
+        // A coach can only write to their own profile.
+        allow write: if request.auth != null && request.auth.uid == coachId;
     }
 
-     /**
-      * @description Grants the coach role to a user. Only the user with a matching UID can create the role document.
-      * @path /roles_coach/{uid}
-      * @allow (get): if false;
-      * @allow (list): if false;
-      * @allow (create): if isSignedIn() && isOwner(uid);
-      * @allow (update): if false;
-      * @allow (delete): if false;
-      * @deny (create): A user attempts to create a role document for another user.
-      * @deny (update): Any user attempts to update a coach role document (not allowed).
-      * @deny (delete): Any user attempts to delete a coach role document (not allowed).
-      * @principle Grants user coach role by UID matching.
-      */
+    // Role documents are private and not client-manageable.
     match /roles_coach/{uid} {
-        allow get: if false;
-        allow list: if false;
-        allow create: if isSignedIn() && isOwner(uid);
-        allow update: if false;
-        allow delete: if false;
-    }
-
-    // --- Helper Functions ---
-
-    /**
-     * @description Checks if the user is signed in.
-     * @return {bool} True if the user is signed in, false otherwise.
-     */
-    function isSignedIn() {
-      return request.auth != null;
-    }
-
-    /**
-     * @description Checks if the user is the owner of the resource (i.e., their UID matches the specified userId).
-     * @param {string} userId The user ID to compare against the request's auth UID.
-     * @return {bool} True if the user is the owner, false otherwise.
-     */
-    function isOwner(userId) {
-      return request.auth.uid == userId;
-    }
-
-    /**
-     * @description Checks if the user is the owner of the resource and the resource exists.
-     * @param {string} userId The user ID to compare against the resource's owner ID.
-     * @return {bool} True if the user is the owner and the resource exists, false otherwise.
-     */
-    function isExistingOwner(userId) {
-      return isOwner(userId) && resource != null;
-    }
-
-    /**
-     * @description Checks if the user has the 'coach' role by verifying the existence of a document in the /roles_coach/{uid} collection.
-     * @param {string} userId The user ID to check for the 'coach' role.
-     * @return {bool} True if the user has the 'coach' role, false otherwise.
-     */
-    function isCoach(userId) {
-        return exists(/databases/$(database)/documents/roles_coach/$(userId));
+        allow read, write: if false;
     }
   }
 }
