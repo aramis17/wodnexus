@@ -8,9 +8,12 @@ import { CalendarDays } from "lucide-react";
 
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    // This will run only on the client, after hydration
     setSelectedDate(new Date("2025-06-02T12:00:00Z"));
+    setIsClient(true);
   }, []);
 
   const wodDates = wods.map((wod) => add(new Date(wod.date), {days: 1}));
@@ -40,7 +43,7 @@ export default function Home() {
             />
           </div>
           <div className="md:col-span-2 lg:col-span-3">
-            <WodDisplay wod={selectedWod} selectedDate={selectedDate} />
+           {isClient && <WodDisplay wod={selectedWod} selectedDate={selectedDate} />}
           </div>
         </div>
       </main>
