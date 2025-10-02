@@ -38,11 +38,6 @@ const DayNavigator = ({ selectedDate, onDateChange }: { selectedDate: Date, onDa
       </Button>
       <div className="text-center flex flex-col items-center">
         <div className="font-bold text-lg text-primary flex items-center gap-2">
-          {!isToday && (
-            <Button variant="link" size="sm" onClick={handleGoToToday} aria-label="Ir a hoy" className="p-0 h-auto text-sm text-primary">
-              Hoy
-            </Button>
-          )}
           <span>{isToday ? "Hoy" : format(selectedDate, 'EEEE', { locale: es })}</span>
         </div>
         <div className="text-sm text-muted-foreground">
@@ -51,6 +46,11 @@ const DayNavigator = ({ selectedDate, onDateChange }: { selectedDate: Date, onDa
       </div>
 
       <div className="flex items-center gap-2">
+      {!isToday && (
+            <Button variant="ghost" size="sm" onClick={handleGoToToday} aria-label="Ir a hoy">
+              Hoy
+            </Button>
+          )}
         <Button variant="ghost" size="icon" onClick={handleNextDay} aria-label="Día siguiente">
           <ArrowRight className="h-5 w-5" />
         </Button>
