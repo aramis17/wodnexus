@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth, useUser } from "@/firebase";
 import { useRouter } from "next/navigation";
@@ -7,9 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { initiateEmailSignIn } from "@/firebase/non-blocking-login";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
-import { onAuthStateChanged } from "firebase/auth";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -19,32 +18,28 @@ export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
 
-  if (isUserLoading) {
+  useEffect(() => {
+    if (user) {
+      router.push('/dashboard');
+    }
+  }, [user, router]);
+
+  if (isUserLoading || user) {
     return <div>Loading...</div>
   }
 
-  if(user) {
-    router.push('/dashboard');
-    return null;
-  }
-
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    initiateEmailSignIn(auth, email, password);
-
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-        if (user) {
-          router.push('/dashboard');
-        } else {
-            toast({
-                variant: "destructive",
-                title: "Error de inicio de sesión",
-                description: "Credenciales incorrectas. Por favor, inténtalo de nuevo.",
-            });
-        }
-        unsubscribe();
-    });
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      // The useEffect will handle the redirect
+    } catch (error) {
+        toast({
+            variant: "destructive",
+            title: "Error de inicio de sesión",
+            description: "Credenciales incorrectas. Por favor, inténtalo de nuevo.",
+        });
+    }
   };
 
   return (

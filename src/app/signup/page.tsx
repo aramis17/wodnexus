@@ -8,13 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
 
 export default function SignupPage() {
-  const [email, setEmail] = useState("aramis17@hotmail.com");
-  const [password, setPassword] = "aramis123".length > 0 ? useState("aramis123") : useState("");
-  const [name, setName] = useState("Aramis");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const auth = useAuth();
   const firestore = useFirestore();
   const { user, isUserLoading } = useUser();
