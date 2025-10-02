@@ -2,7 +2,7 @@ import { Wod } from "./types";
 
 export const wods: Wod[] = [
     {
-      "date": "2024-07-15",
+      "date": "2025-10-02",
       "title": "Full Body de Lunes",
       "intro": [
         "Comenzamos la semana con un WOD completo para activar todo el cuerpo y construir una base sólida para los próximos días."
@@ -41,7 +41,7 @@ export const wods: Wod[] = [
       ]
     },
     {
-      "date": "2024-07-16",
+      "date": "2025-10-16",
       "title": "Héroe 'Murph'",
       "intro": [
         "Un WOD Héroe clásico en honor al Teniente de la Marina Michael Murphy. Prepárate para un desafío de resistencia y mentalidad.",
@@ -77,7 +77,7 @@ export const wods: Wod[] = [
       ]
     },
     {
-        "date": "2024-07-17",
+        "date": "2025-10-17",
         "title": "Miércoles de Potencia y Agilidad",
         "intro": [
           "Hoy nos enfocamos en la potencia explosiva con levantamientos olímpicos y la agilidad con saltos."
