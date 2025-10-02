@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { useAuth, useUser } from "@/firebase";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -82,6 +83,12 @@ export default function LoginPage() {
               Iniciar Sesión
             </Button>
           </form>
+          <div className="mt-4 text-center text-sm">
+            ¿No tienes una cuenta?{" "}
+            <Link href="/signup" className="underline">
+              Regístrate
+            </Link>
+          </div>
         </CardContent>
       </Card>
     </div>
