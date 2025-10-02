@@ -11,28 +11,34 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("aramis17@hotmail.com");
+  const [password, setPassword] = useState("aramis123");
   const auth = useAuth();
   const { user, isUserLoading } = useUser();
   const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
-    if (user) {
-      router.push('/dashboard');
+    // If the user is loaded and exists, redirect to dashboard.
+    if (!isUserLoading && user) {
+      router.replace('/dashboard');
     }
-  }, [user, router]);
+  }, [user, isUserLoading, router]);
 
+  // While loading, or if the user is already being redirected, show a loading state.
   if (isUserLoading || user) {
-    return <div>Loading...</div>
+    return <div>Cargando...</div>;
   }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // The useEffect will handle the redirect
+      // The useEffect will now handle the redirect once the user state is updated.
+      toast({
+        title: "¡Bienvenido de vuelta!",
+        description: "Has iniciado sesión correctamente.",
+      });
     } catch (error) {
         toast({
             variant: "destructive",
