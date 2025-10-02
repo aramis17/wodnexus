@@ -12,7 +12,7 @@ export default function Home() {
 
   useEffect(() => {
     // This will run only on the client, after hydration
-    setSelectedDate(new Date("2025-06-02T12:00:00Z"));
+    setSelectedDate(new Date());
     setIsClient(true);
   }, []);
 

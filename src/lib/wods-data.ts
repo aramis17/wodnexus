@@ -2,7 +2,7 @@ import type { Wod } from './types';
 
 export const wods: Wod[] = [
   {
-    "date": "2025-06-02",
+    "date": "2025-10-02",
     "title": "SEMANA 1/BLOQUE 5 DE ENTRENAMIENTO",
     "intro": [
       "Entramos en una nueva etapa de entrenamiento.",
@@ -57,7 +57,7 @@ export const wods: Wod[] = [
     ]
   },
   {
-    "date": "2025-06-03",
+    "date": "2025-10-03",
     "title": "SEMANA 1/BLOQUE 5 DE ENTRENAMIENTO",
     "intro": [
       "NUEVA ETAPA DE ENTRENAMIENTO"
@@ -110,7 +110,7 @@ export const wods: Wod[] = [
     ]
   },
   {
-    "date": "2025-06-04",
+    "date": "2025-10-04",
     "title": "SEMANA 1/BLOQUE 5 DE ENTRENAMIENTO",
     "intro": [
       "NUEVA ETAPA"
@@ -171,7 +171,7 @@ export const wods: Wod[] = [
     ]
   },
   {
-    "date": "2025-06-05",
+    "date": "2025-10-05",
     "title": "SEMANA 1/BLOQUE 5 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
@@ -196,7 +196,7 @@ export const wods: Wod[] = [
     ]
   },
   {
-    "date": "2025-06-06",
+    "date": "2025-10-06",
     "title": "SEMANA 1/BLOQUE 5 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
@@ -251,7 +251,7 @@ export const wods: Wod[] = [
     ]
   },
   {
-    "date": "2025-06-07",
+    "date": "2025-10-07",
     "title": "SEMANA 1/BLOQUE 5 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
@@ -288,7 +288,7 @@ export const wods: Wod[] = [
     ]
   },
   {
-    "date": "2025-06-09",
+    "date": "2025-10-09",
     "title": "SEMANA 2/BLOQUE 5 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
@@ -333,7 +333,7 @@ export const wods: Wod[] = [
     ]
   },
   {
-    "date": "2025-06-10",
+    "date": "2025-10-10",
     "title": "SEMANA 2/BLOQUE 5 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
@@ -378,7 +378,7 @@ export const wods: Wod[] = [
     ]
   },
   {
-    "date": "2025-06-11",
+    "date": "2025-10-11",
     "title": "SEMANA 2/BLOQUE 5 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
@@ -415,7 +415,7 @@ export const wods: Wod[] = [
     ]
   },
   {
-    "date": "2025-06-12",
+    "date": "2025-10-12",
     "title": "SEMANA 2/BLOQUE 5 DE ENTRENAMIENTO",
     "intro": [
       "De preferencia realizar el trabajo en pista, algún parque o algún lugar donde no haya interferencia para correr seguido.",
@@ -443,7 +443,7 @@ export const wods: Wod[] = [
     ]
   },
   {
-    "date": "2025-06-13",
+    "date": "2025-10-13",
     "title": "SEMANA 2/BLOQUE 5 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
@@ -494,7 +494,7 @@ export const wods: Wod[] = [
     ]
   },
   {
-    "date": "2025-06-14",
+    "date": "2025-10-14",
     "title": "SEMANA 2/BLOQUE 5 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
@@ -545,7 +545,7 @@ export const wods: Wod[] = [
     ]
   },
   {
-    "date": "2025-06-16",
+    "date": "2025-10-16",
     "title": "SEMANA 3/BLOQUE 5 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
@@ -572,7 +572,7 @@ export const wods: Wod[] = [
     ]
   },
   {
-    "date": "2025-06-17",
+    "date": "2025-10-17",
     "title": "SEMANA 3/BLOQUE 5 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
@@ -623,7 +623,7 @@ export const wods: Wod[] = [
     ]
   },
   {
-    "date": "2025-06-18",
+    "date": "2025-10-18",
     "title": "SEMANA 3/BLOQUE 5 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
@@ -670,12 +670,37 @@ export const wods: Wod[] = [
     ]
   },
   {
-    "date": "2025-06-19",
+    "date": "2025-10-19",
     "title": "SEMANA 3/BLOQUE 5 DE ENTRENAMIENTO",
     "intro": [
       "De preferencia realizar el trabajo en pista, algún parque o algún lugar donde no haya interferencia para correr seguido.",
       "Se tiene que respetar los cambios de ritmo lo mas que se pueda."
     ],
+    "sections": [
+      {
+        "title": "Warmup",
+        "content": "3 ROUNDS:\n-14 seated hip internal rotation\nhttps://www.youtube.com/watch?v=VI2HPy3zfhY\n-10/10 single leg glute bridge\nhttps://www.youtube.com/watch?v=egs6m4J8u8c\n-30 mts toe walking\nhttps://www.youtube.com/watch?v=S97dOr-Kb50"
+      },
+      {
+        "title": "Custom Metcon",
+        "type": "metcon",
+        "levels": [
+          {
+            "name": "RX",
+            "content": "3 ROUNDS:\n-1 mile Run (1600 mts) @Zona 2-3 de esfuerzo (Moderado)\n*Descansa 1:30 min\n-400 mts Run @Zona 4-5 de esfuerzo (Sprint)\n*Descansa 3:00 min entre cada ROUND.\n*METROS TOTAL= 6000 mts."
+          },
+          {
+            "name": "SCALED",
+            "content": "3 ROUNDS:\n-800 mts Run @Zona 2-3 de esfuerzo (Moderado)\n*Descansa 1:30 min\n-400 mts Run @Zona 4-5 de esfuerzo (Sprint)\n*Descansa 3:00 min entre cada ROUND.\n*METROS TOTAL= 3600 mts."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "date": "2025-10-20",
+    "title": "SEMANA 3/BLOQUE 5 DE ENTRENAMIENTO",
+    "intro": [],
     "sections": [
       {
         "title": "Warmup",
