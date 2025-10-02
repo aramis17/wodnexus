@@ -6,24 +6,27 @@ import { wods } from "@/lib/wods-data";
 import { isSameDay } from "date-fns";
 import { CalendarDays } from "lucide-react";
 
+// Helper para obtener una fecha en UTC y evitar problemas de zona horaria
+const getUTCDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+};
+
+
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
 
   useEffect(() => {
-    // This will run only on the client, after hydration
-    // to ensure the date is the client's current date.
+    // Esto se ejecuta solo en el cliente para evitar errores de hidratación.
     setSelectedDate(new Date());
   }, []);
 
-  // Create dates from UTC strings and zero out the time to avoid timezone issues.
-  const wodDates = wods.map((wod) => {
-    const date = new Date(wod.date + 'T00:00:00');
-    return date;
-  });
+  // Obtenemos las fechas de los WODs como fechas UTC
+  const wodDates = wods.map((wod) => getUTCDate(wod.date));
   
   const selectedWod = selectedDate
     ? wods.find((wod) => {
-        const wodDate = new Date(wod.date + 'T00:00:00');
+        const wodDate = getUTCDate(wod.date);
         return isSameDay(wodDate, selectedDate);
       })
     : undefined;
