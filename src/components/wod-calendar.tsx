@@ -6,14 +6,12 @@ import { es } from "date-fns/locale";
 import type { Wod } from "@/lib/types";
 import { toZonedTime } from "date-fns-tz";
 import { useMemo } from "react";
-import { Skeleton } from "./ui/skeleton";
 
 interface WodCalendarProps {
   selected: Date | undefined;
   onSelect: (date: Date | undefined) => void;
   wods: Wod[];
   className?: string;
-  isLoading: boolean;
 }
 
 export function WodCalendar({
@@ -21,38 +19,12 @@ export function WodCalendar({
   onSelect,
   wods,
   className,
-  isLoading,
 }: WodCalendarProps) {
   const wodDates = useMemo(() => {
     if (!wods) return [];
     const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     return wods.map((wod) => toZonedTime(`${wod.date}T00:00:00`, userTimeZone));
   }, [wods]);
-
-  if (isLoading) {
-    return (
-      <div className={cn("p-4", className)}>
-        <div className="flex justify-between items-center mb-4">
-          <Skeleton className="h-8 w-24" />
-          <Skeleton className="h-8 w-16" />
-        </div>
-        <div className="space-y-2">
-          <div className="grid grid-cols-7 gap-2">
-            {[...Array(7)].map((_, i) => (
-              <Skeleton key={i} className="h-9 w-9" />
-            ))}
-          </div>
-          {[...Array(5)].map((_, weekIndex) => (
-            <div key={weekIndex} className="grid grid-cols-7 gap-2">
-              {[...Array(7)].map((_, dayIndex) => (
-                <Skeleton key={dayIndex} className="h-9 w-9 rounded-full" />
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className={cn(className)}>
