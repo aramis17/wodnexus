@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WodCalendar } from "@/components/wod-calendar";
 import { WodDisplay } from "@/components/wod-display";
 import { wods } from "@/lib/wods-data";
@@ -7,9 +7,11 @@ import { add, isSameDay } from "date-fns";
 import { CalendarDays } from "lucide-react";
 
 export default function Home() {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    new Date("2025-06-02T12:00:00Z")
-  );
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+
+  useEffect(() => {
+    setSelectedDate(new Date("2025-06-02T12:00:00Z"));
+  }, []);
 
   const wodDates = wods.map((wod) => add(new Date(wod.date), {days: 1}));
   
