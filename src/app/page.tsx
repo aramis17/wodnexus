@@ -5,13 +5,13 @@ import { WodDisplay } from "@/components/wod-display";
 import { wods } from "@/lib/wods-data";
 import { isSameDay } from "date-fns";
 import { CalendarDays } from "lucide-react";
-import { utcToZonedTime } from 'date-fns-tz';
+import { toZonedTime } from 'date-fns-tz';
 
 const getWodForDate = (date: Date) => {
   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   return wods.find((wod) => {
     // Treat WOD date string 'YYYY-MM-DD' as being in the user's timezone
-    const wodDate = utcToZonedTime(`${wod.date}T00:00:00`, userTimeZone);
+    const wodDate = toZonedTime(`${wod.date}T00:00:00`, userTimeZone);
     return isSameDay(date, wodDate);
   });
 }

@@ -4,7 +4,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { es } from "date-fns/locale";
 import type { Wod } from "@/lib/types";
-import { utcToZonedTime } from "date-fns-tz";
+import { toZonedTime } from "date-fns-tz";
 import { useMemo } from "react";
 
 interface WodCalendarProps {
@@ -22,7 +22,7 @@ export function WodCalendar({
 }: WodCalendarProps) {
   const wodDates = useMemo(() => {
     const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    return wods.map((wod) => utcToZonedTime(`${wod.date}T00:00:00`, userTimeZone));
+    return wods.map((wod) => toZonedTime(`${wod.date}T00:00:00`, userTimeZone));
   }, [wods]);
 
   return (
