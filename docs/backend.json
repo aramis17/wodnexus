@@ -1,0 +1,182 @@
+{
+  "entities": {
+    "Wod": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Wod",
+      "type": "object",
+      "description": "Represents a Workout of the Day (WOD).",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the WOD.",
+          "format": "uuid"
+        },
+        "date": {
+          "type": "string",
+          "description": "The date the WOD is scheduled for.",
+          "format": "date"
+        },
+        "week": {
+          "type": "string",
+          "description": "Week number within the training block."
+        },
+        "block": {
+          "type": "string",
+          "description": "Training block number."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title or theme of the WOD."
+        },
+        "description": {
+          "type": "string",
+          "description": "General description or notes about the WOD."
+        },
+        "warmup": {
+          "type": "string",
+          "description": "Details of the warmup routine."
+        },
+        "weightlifting": {
+          "type": "string",
+          "description": "Details of the weightlifting component."
+        },
+        "metcon": {
+          "type": "string",
+          "description": "Details of the metabolic conditioning (metcon) component."
+        },
+        "skill": {
+          "type": "string",
+          "description": "Details of the skill-based practice component."
+        },
+        "rx": {
+          "type": "string",
+          "description": "Details of the RX version of the workout."
+        },
+        "advanced": {
+          "type": "string",
+          "description": "Details of the Advanced version of the workout."
+        },
+        "intermediate": {
+          "type": "string",
+          "description": "Details of the Intermediate version of the workout."
+        },
+        "coachId": {
+          "type": "string",
+          "description": "Reference to Coach. (Relationship: Coach 1:N Wod)"
+        }
+      },
+      "required": [
+        "id",
+        "date",
+        "title",
+        "coachId"
+      ]
+    },
+    "Coach": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Coach",
+      "type": "object",
+      "description": "Represents a coach who can manage WODs.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Coach.",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string",
+          "description": "The coach's full name."
+        },
+        "email": {
+          "type": "string",
+          "description": "The coach's email address.",
+          "format": "email"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "email"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/coaches/{coachId}",
+        "definition": {
+          "entityName": "Coach",
+          "schema": {
+            "$ref": "#/backend/entities/Coach"
+          },
+          "description": "Stores coach profiles. The 'coachId' is the Firebase Authentication UID.",
+          "params": [
+            {
+              "name": "coachId",
+              "description": "The unique identifier of the coach, matching the Firebase Authentication UID."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/wods/{wodId}",
+        "definition": {
+          "entityName": "Wod",
+          "schema": {
+            "$ref": "#/backend/entities/Wod"
+          },
+          "description": "Stores WOD data. Includes 'coachId' for authorization independence.",
+          "params": [
+            {
+              "name": "wodId",
+              "description": "The unique identifier of the WOD."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/coaches/{coachId}/wods/{wodId}",
+        "definition": {
+          "entityName": "Wod",
+          "schema": {
+            "$ref": "#/backend/entities/Wod"
+          },
+          "description": "Stores WOD data. Includes 'coachId' for authorization independence.",
+          "params": [
+            {
+              "name": "coachId",
+              "description": "The unique identifier of the coach, matching the Firebase Authentication UID."
+            },
+            {
+              "name": "wodId",
+              "description": "The unique identifier of the WOD."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/roles_coach/{coachId}",
+        "definition": {
+          "entityName": "Coach",
+          "schema": {
+            "$ref": "#/backend/entities/Coach"
+          },
+          "description": "Coach presence document for role-based access control. Existence implies coach role. The 'coachId' is the Firebase Authentication UID.",
+          "params": [
+            {
+              "name": "coachId",
+              "description": "The unique identifier of the coach, matching the Firebase Authentication UID."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to support a calendar-based display of WODs, managed by coaches. Authorization independence is achieved by storing the `coachId` directly within each WOD document. This eliminates the need for security rules to perform `get()` operations on parent documents to verify ownership. Segregation ensures that all documents in the `wods` collection share the same security requirements, and all data is specific to `Wod` entities, enabling secure `list` operations without the need for filtering based on access rights.\n\nThe structure includes a dedicated collection for coaches (`coaches`) and another for wods (`wods`). The Coach document stores all the necessary information about a `Coach`, which also facilitates management of `Wod` entities by each Coach. Each `Wod` document stores all related information about the workout for a specific day."
+  }
+}
