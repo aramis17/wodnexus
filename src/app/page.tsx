@@ -3,25 +3,18 @@
 import { useState } from "react";
 import { WodCalendar } from "@/components/wod-calendar";
 import { WodDisplay } from "@/components/wod-display";
-import { wods } from "@/lib/wods-data";
 import { isSameDay, addDays, subDays } from "date-fns";
-import { CalendarDays, ArrowLeft, ArrowRight, Calendar as CalendarIcon, Undo2 } from "lucide-react";
+import { CalendarDays, ArrowLeft, ArrowRight, Calendar as CalendarIcon } from "lucide-react";
 import { toZonedTime } from 'date-fns-tz';
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection } from "firebase/firestore";
+import type { Wod } from "@/lib/types";
 
-
-const getWodForDate = (date: Date) => {
-  const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const zonedDate = toZonedTime(date, userTimeZone);
-  return wods.find((wod) => {
-    const wodDate = toZonedTime(`${wod.date}T00:00:00`, userTimeZone);
-    return isSameDay(zonedDate, wodDate);
-  });
-}
 
 const DayNavigator = ({ selectedDate, onDateChange }: { selectedDate: Date, onDateChange: (date: Date) => void }) => {
   const today = new Date();
@@ -47,6 +40,11 @@ const DayNavigator = ({ selectedDate, onDateChange }: { selectedDate: Date, onDa
       </Button>
       <div className="text-center flex flex-col items-center">
         <div className="font-bold text-lg text-primary flex items-center gap-2">
+          {!isToday && (
+            <Button variant="link" size="sm" onClick={handleGoToToday} aria-label="Ir a hoy" className="p-0 h-auto text-sm text-primary">
+              Hoy
+            </Button>
+          )}
           <span>{isToday ? "Hoy" : format(selectedDate, 'EEEE', { locale: es })}</span>
         </div>
         <div className="text-sm text-muted-foreground">
@@ -55,17 +53,9 @@ const DayNavigator = ({ selectedDate, onDateChange }: { selectedDate: Date, onDa
       </div>
 
       <div className="flex items-center gap-2">
-        {!isToday && (
-          <Button variant="ghost" size="icon" onClick={handleGoToToday} aria-label="Ir a hoy" className="mr-2">
-            {/* <Undo2 className="h-5 w-5" /> */}
-            Hoy
-          </Button>
-        )}
-      
         <Button variant="ghost" size="icon" onClick={handleNextDay} aria-label="Día siguiente">
           <ArrowRight className="h-5 w-5" />
         </Button>
-
       </div>
     </div>
   );
@@ -76,6 +66,25 @@ export default function Home() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const isMobile = useIsMobile();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+  const firestore = useFirestore();
+
+  const wodsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return collection(firestore, 'wods');
+  }, [firestore]);
+
+  const { data: wods, isLoading: isLoadingWods } = useCollection<Wod>(wodsQuery);
+
+  const getWodForDate = (date: Date) => {
+    if (!wods) return undefined;
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const zonedDate = toZonedTime(date, userTimeZone);
+    return wods.find((wod) => {
+      const wodDate = toZonedTime(`${wod.date}T00:00:00`, userTimeZone);
+      return isSameDay(zonedDate, wodDate);
+    });
+  }
 
   const selectedWod = selectedDate ? getWodForDate(selectedDate) : undefined;
   
@@ -111,14 +120,15 @@ export default function Home() {
                     <WodCalendar
                       selected={selectedDate}
                       onSelect={handleDateSelect}
-                      wods={wods}
+                      wods={wods || []}
+                      isLoading={isLoadingWods}
                       className="bg-card p-2 rounded-lg shadow-sm"
                     />
                   </PopoverContent>
                 </Popover>
              </div>
              <div className="w-full">
-                <WodDisplay wod={selectedWod} selectedDate={selectedDate} />
+                <WodDisplay wod={selectedWod} selectedDate={selectedDate} isLoading={isLoadingWods} />
              </div>
            </div>
         ) : (
@@ -127,12 +137,13 @@ export default function Home() {
               <WodCalendar
                 selected={selectedDate}
                 onSelect={setSelectedDate}
-                wods={wods}
+                wods={wods || []}
+                isLoading={isLoadingWods}
                 className="bg-card p-2 rounded-lg shadow-sm"
               />
             </div>
             <div className="md:col-span-2 lg:col-span-3">
-             <WodDisplay wod={selectedWod} selectedDate={selectedDate} />
+             <WodDisplay wod={selectedWod} selectedDate={selectedDate} isLoading={isLoadingWods} />
             </div>
           </div>
         )}

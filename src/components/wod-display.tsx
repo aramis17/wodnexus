@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { WodContentParser } from "./wod-content-parser";
 import { MetconTabs } from "./metcon-tabs";
 import {
@@ -31,6 +31,7 @@ import {
 interface WodDisplayProps {
   wod: Wod | undefined;
   selectedDate: Date | undefined;
+  isLoading: boolean;
 }
 
 const getSectionIcon = (title: string) => {
@@ -43,7 +44,29 @@ const getSectionIcon = (title: string) => {
   return Info;
 };
 
-export function WodDisplay({ wod, selectedDate }: WodDisplayProps) {
+export function WodDisplay({ wod, selectedDate, isLoading }: WodDisplayProps) {
+  if (isLoading) {
+    return (
+      <Card className="w-full">
+        <CardHeader>
+          <Skeleton className="h-4 w-1/3" />
+          <Skeleton className="h-8 w-2/3" />
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <Skeleton className="h-20 w-full" />
+          <div className="space-y-4">
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-24 w-full" />
+          </div>
+          <div className="space-y-4">
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-24 w-full" />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   if (!wod || !selectedDate) {
     return (
       <Card className="flex flex-col items-center justify-center text-center p-12 min-h-[400px]">
@@ -73,7 +96,7 @@ export function WodDisplay({ wod, selectedDate }: WodDisplayProps) {
         <CardTitle className="text-3xl font-bold">{wod.title}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        {wod.intro.length > 0 && (
+        {wod.intro && wod.intro.length > 0 && (
           <div className="p-4 bg-card/50 rounded-lg space-y-2 border">
             {wod.intro.map((line, index) => (
               <p key={index} className="text-sm text-foreground/80">
@@ -92,7 +115,7 @@ export function WodDisplay({ wod, selectedDate }: WodDisplayProps) {
             const Icon = getSectionIcon(section.title);
             return (
               <AccordionItem key={index} value={`item-${index}`}>
-                <AccordionTrigger className="text-xl font-semibold">
+                <AccordionTrigger className="text-xl font-semibold hover:no-underline">
                   <div className="flex items-center gap-3">
                     <Icon className="w-6 h-6 text-primary" />
                     {section.title}
