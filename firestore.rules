@@ -1,125 +1,112 @@
 /**
- * @fileoverview Firestore Security Rules for WOD Management App
+ * @fileOverview Firestore Security Rules for a WOD calendar application with Coach roles.
  *
  * Core Philosophy:
- * This ruleset enforces a role-based access control model, where Coaches can manage WODs.
- * Coaches are identified by their Firebase Authentication UID.
+ * This ruleset enforces a user-ownership model for coaches and their WODs. Coaches can only manage WODs they have created.
  *
  * Data Structure:
- * - /coaches/{coachId}: Stores coach profiles. 'coachId' matches the Firebase Authentication UID.
- * - /wods/{wodId}: Stores WOD data. Includes 'coachId' for authorization.
- * - /coaches/{coachId}/wods/{wodId}: Stores WOD data.
- * - /roles_coach/{coachId}: Coach role presence document. Existence implies coach role.
+ * - /coaches/{coachId}: Stores coach profiles, with coachId matching the user's UID.
+ * - /coaches/{coachId}/wods/{wodId}: Stores WODs created by the coach, with denormalized coachId for authorization.
+ * - /roles_coach/{coachId}:  Indicates a coach role by the existence of a document with ID equal to the user's UID.
  *
  * Key Security Decisions:
- * - Coaches can create, update, and delete WODs.
- * - Non-coaches are denied access to WOD creation, modification, and deletion.
- * - All data is specific to Wod entities, enabling secure list operations.
+ * - Only authenticated coaches can create, update, or delete WODs under their respective coachId.
+ * - Data consistency between paths and document IDs is enforced to prevent unauthorized data creation.
+ * - The rules explicitly prevent listing all WODs; coaches can only list WODs under their ID.
  *
  * Denormalization for Authorization:
- * The 'coachId' is stored directly within each WOD document to enable authorization checks without additional reads.
+ * - WOD documents include a denormalized 'coachId' to allow authorization without additional reads.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
+     * @description Allows coaches to manage their profiles.
+     * @path /coaches/{coachId}
+     * @allow (create) - Authenticated user with UID 'user123' can create a coach profile at /coaches/user123.
+     * @allow (get, update, delete) - Authenticated user with UID 'user123' can get, update, or delete their profile at /coaches/user123.
+     * @deny (create) - Authenticated user with UID 'user456' cannot create a coach profile at /coaches/user123.
+     * @deny (update, delete) - Authenticated user with UID 'user456' cannot update or delete the profile at /coaches/user123.
+     * @principle Enforces document ownership, restricting profile management to the owning user.
+     */
+    match /coaches/{coachId} {
+      allow get: if isSignedIn();
+      allow list: if false;
+      allow create: if isOwner(coachId);
+      allow update: if isExistingOwner(coachId);
+      allow delete: if isExistingOwner(coachId);
+    }
+
+    /**
+     * @description Allows coaches to manage their WODs.
+     * @path /coaches/{coachId}/wods/{wodId}
+     * @allow (create) - Authenticated coach with UID 'coach123' can create a WOD at /coaches/coach123/wods/wod456.
+     * @allow (get, update, delete) - Authenticated coach with UID 'coach123' can get, update, or delete their WOD at /coaches/coach123/wods/wod456.
+     * @allow (list) - Authenticated coach with UID 'coach123' can list all of their WODs under /coaches/coach123/wods.
+     * @deny (create) - Authenticated user with UID 'user456' cannot create a WOD under /coaches/coach123/wods/wod456.
+     * @deny (update, delete) - Authenticated user with UID 'user456' cannot update or delete the WOD at /coaches/coach123/wods/wod456.
+     * @principle Enforces document ownership, restricting WOD management to the creating coach.
+     */
+    match /coaches/{coachId}/wods/{wodId} {
+      allow get: if isSignedIn() && isOwner(coachId);
+      allow list: if isSignedIn() && isOwner(coachId);
+      allow create: if isCoach() && isOwner(coachId) && request.resource.data.id == wodId;
+      allow update: if isCoach() && isExistingOwner(coachId) && request.resource.data.id == wodId;
+      allow delete: if isCoach() && isExistingOwner(coachId);
+    }
+
+        /**
+         * @description Allows users with a 'coach' role to have their role document created.
+         * @path /roles_coach/{coachId}
+         * @allow (create) - Authenticated user with UID 'coach123' can create a coach role document at /roles_coach/coach123.
+         * @allow (get) - Any authenticated user can check if a coach role exists for a specific user
+         * @deny (create) - Authenticated user with UID 'user456' cannot create a coach role document at /roles_coach/coach123.
+         * @deny (update, delete) - Only the system should be able to modify/delete these role documents.
+         * @principle Protects role creation by enforcing that only the authenticated user can create their role document.
+         */
+    match /roles_coach/{coachId} {
+      allow get: if isSignedIn();
+      allow list: if false;
+      allow create: if isSignedIn() && request.auth.uid == coachId;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // Helper functions
+
+    /**
      * @description Checks if the user is signed in.
+     * @return {boolean} True if the user is signed in, false otherwise.
      */
     function isSignedIn() {
       return request.auth != null;
     }
 
     /**
-     * @description Checks if the user is a coach.
+     * @description Checks if the user is the owner of the document, based on the provided userId.
+     * @param {string} userId - The user ID to compare against the request's authentication UID.
+     * @return {boolean} True if the user is the owner, false otherwise.
+     */
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    /**
+     * @description Checks if the user is the owner of the document and the document exists.
+     * @param {string} userId - The user ID to compare against the resource's 'userId' field.
+     * @return {boolean} True if the user is the owner and the document exists, false otherwise.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /**
+     * @description Checks if the user has the 'coach' role by verifying the existence of a document under /roles_coach/{userId}.
+     * @return {boolean} True if the user has the 'coach' role, false otherwise.
      */
     function isCoach() {
-        return exists(/databases/$(database)/documents/roles_coach/$(request.auth.uid));
-    }
-
-    /**
-     * @description Checks if the user is the owner (coach) of the resource.
-     */
-    function isOwner(coachId) {
-      return isSignedIn() && request.auth.uid == coachId;
-    }
-
-    /**
-     * @description Checks if the user is the existing owner (coach) of the resource.
-     */
-    function isExistingOwner(coachId) {
-      return isOwner(coachId) && resource != null;
-    }
-
-    /**
-     * @description Rule for /coaches/{coachId}
-     * @path /coaches/{coachId}
-     * @allow (create) Signed-in user can create their own coach profile.
-     *          Request: auth.uid = "user_abc", data.id = "user_abc"
-     * @deny (create) Signed-in user cannot create a coach profile for another user.
-     *          Request: auth.uid = "user_abc", data.id = "user_xyz"
-     * @allow (get) Any signed-in user can read a coach profile.
-     * @deny (update) Only the owner (coach) can update their profile.
-     * @principle Enforces document ownership for writes; allows public reads.
-     */
-    match /coaches/{coachId} {
-      allow create: if isOwner(coachId) && request.resource.data.id == coachId;
-      allow get: if isSignedIn();
-      allow list: if false;
-      allow update: if isExistingOwner(coachId);
-      allow delete: if false;
-    }
-
-    /**
-     * @description Rule for /wods/{wodId}
-     * @path /wods/{wodId}
-     * @allow (create) A coach can create a WOD.
-     * @deny (create) A non-coach cannot create a WOD.
-     * @allow (get, list) Any user can read the WOD.
-     * @deny (update, delete) Only the creating coach can update/delete the WOD.
-     * @principle Enforces role-based access control for creation; enforces document ownership for modification.
-     */
-    match /wods/{wodId} {
-      allow create: if isCoach();
-      allow get, list: if true;
-      allow update: if isCoach() && request.resource.data.coachId == resource.data.coachId;
-      allow delete: if isCoach() && request.resource.data.coachId == resource.data.coachId;
-    }
-
-       /**
-     * @description Rule for /coaches/{coachId}/wods/{wodId}
-     * @path /coaches/{coachId}/wods/{wodId}
-     * @allow (create) A coach can create a WOD.
-     * @deny (create) A non-coach cannot create a WOD.
-     * @allow (get, list) Any user can read the WOD.
-     * @deny (update, delete) Only the creating coach can update/delete the WOD.
-     * @principle Enforces role-based access control for creation; enforces document ownership for modification.
-     */
-    match /coaches/{coachId}/wods/{wodId} {
-      allow create: if isCoach();
-      allow get, list: if true;
-      allow update: if isCoach() && request.resource.data.coachId == resource.data.coachId;
-      allow delete: if isCoach() && request.resource.data.coachId == resource.data.coachId;
-    }
-
-
-    /**
-     * @description Rule for /roles_coach/{coachId}
-     * @path /roles_coach/{coachId}
-     * @allow (create) A user can create their own coach role document.
-     *          Request: auth.uid = "user_abc", data.id = "user_abc"
-     * @deny (create) A user cannot create a coach role document for another user.
-     *          Request: auth.uid = "user_abc", data.id = "user_xyz"
-     * @allow (get) Any signed-in user can read a coach role document.
-     * @deny (update) No one can update a coach role document.
-     * @principle Enforces document ownership for creation; allows public reads.
-     */
-    match /roles_coach/{coachId} {
-      allow create: if isOwner(coachId) && request.resource.data.id == coachId;
-      allow get: if isSignedIn();
-      allow list: if false;
-      allow update: if false;
-      allow delete: if false;
+        return exists(/databases/(database)/documents/roles_coach/$(request.auth.uid));
     }
   }
 }
