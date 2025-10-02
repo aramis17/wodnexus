@@ -33,9 +33,10 @@ export function CoachGuard({ children }: { children: React.ReactNode }) {
     return null;
   }
   
+  // The user exists, but we need to check their role.
+  // If the coachRole document does not exist (is null), they are not a coach.
   if (!coachRole) {
     router.replace("/");
-    // You can show an access denied message here
     return (
         <div className="flex flex-col items-center justify-center min-h-screen">
             <h1 className="text-2xl font-bold text-destructive">Acceso Denegado</h1>
