@@ -4,46 +4,46 @@
 
 @layer base {
   :root {
-    --background: 220 13% 18%;
-    --foreground: 0 0% 100%;
-    --card: 220 13% 18%;
+    --background: 240 2% 13%; /* #202022 */
+    --foreground: 0 0% 100%; /* #FFFFFF */
+    --card: 240 2% 16%; /* #272729 */
     --card-foreground: 0 0% 100%;
-    --popover: 220 13% 18%;
+    --popover: 240 2% 13%;
     --popover-foreground: 0 0% 100%;
-    --primary: 204 90% 53%;
+    --primary: 204 90% 53%; /* Azul Brillante */
     --primary-foreground: 240 5.9% 10%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 205 90% 58%; /* Azul Brillante Acento */
+    --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
+    --border: 240 2% 25%; /* Borde con más contraste */
     --input: 240 3.7% 15.9%;
     --ring: 204 90% 53%;
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 220 13% 18%;
-    --foreground: 0 0% 100%;
-    --card: 220 13% 18%;
+    --background: 240 2% 13%; /* #202022 */
+    --foreground: 0 0% 100%; /* #FFFFFF */
+    --card: 240 2% 16%; /* #272729 */
     --card-foreground: 0 0% 100%;
-    --popover: 220 13% 18%;
+    --popover: 240 2% 13%;
     --popover-foreground: 0 0% 100%;
-    --primary: 204 90% 53%;
+    --primary: 204 90% 53%; /* Azul Brillante */
     --primary-foreground: 240 5.9% 10%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 205 90% 58%; /* Azul Brillante Acento */
+    --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
+    --border: 240 2% 25%; /* Borde con más contraste */
     --input: 240 3.7% 15.9%;
     --ring: 204 90% 53%;
   }
@@ -62,8 +62,5 @@
   .rdp-day_hasWod::after {
     content: '';
     @apply absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-primary;
-  }
-  .rdp-day_selected {
-    @apply !bg-primary !text-primary-foreground;
   }
 }

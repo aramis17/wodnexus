@@ -10,7 +10,6 @@ import { toZonedTime } from 'date-fns-tz';
 const getWodForDate = (date: Date) => {
   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   return wods.find((wod) => {
-    // Treat WOD date string 'YYYY-MM-DD' as being in the user's timezone
     const wodDate = toZonedTime(`${wod.date}T00:00:00`, userTimeZone);
     return isSameDay(date, wodDate);
   });

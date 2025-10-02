@@ -21,6 +21,12 @@ import {
   CalendarX,
 } from "lucide-react";
 import React from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 interface WodDisplayProps {
   wod: Wod | undefined;
@@ -56,6 +62,8 @@ export function WodDisplay({ wod, selectedDate }: WodDisplayProps) {
     );
   }
 
+  const defaultActiveSections = wod.sections.map((_, index) => `item-${index}`);
+
   return (
     <Card className="w-full animate-fade-in">
       <CardHeader>
@@ -66,7 +74,7 @@ export function WodDisplay({ wod, selectedDate }: WodDisplayProps) {
       </CardHeader>
       <CardContent className="space-y-6">
         {wod.intro.length > 0 && (
-          <div className="p-4 bg-accent/30 rounded-lg space-y-2">
+          <div className="p-4 bg-card/50 rounded-lg space-y-2 border">
             {wod.intro.map((line, index) => (
               <p key={index} className="text-sm text-foreground/80">
                 {line}
@@ -75,24 +83,32 @@ export function WodDisplay({ wod, selectedDate }: WodDisplayProps) {
           </div>
         )}
 
-        {wod.sections.map((section, index) => {
-          const Icon = getSectionIcon(section.title);
-          return (
-            <div key={index}>
-              <Separator className="my-6" />
-              <div className="flex items-center gap-3 mb-4">
-                <Icon className="w-6 h-6 text-primary" />
-                <h3 className="text-xl font-semibold">{section.title}</h3>
-              </div>
-
-              {isMetconSection(section) ? (
-                <MetconTabs section={section} />
-              ) : (
-                <WodContentParser content={section.content} />
-              )}
-            </div>
-          );
-        })}
+        <Accordion
+          type="multiple"
+          defaultValue={defaultActiveSections}
+          className="w-full"
+        >
+          {wod.sections.map((section, index) => {
+            const Icon = getSectionIcon(section.title);
+            return (
+              <AccordionItem key={index} value={`item-${index}`}>
+                <AccordionTrigger className="text-xl font-semibold">
+                  <div className="flex items-center gap-3">
+                    <Icon className="w-6 h-6 text-primary" />
+                    {section.title}
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="pt-4">
+                  {isMetconSection(section) ? (
+                    <MetconTabs section={section} />
+                  ) : (
+                    <WodContentParser content={section.content} />
+                  )}
+                </AccordionContent>
+              </AccordionItem>
+            );
+          })}
+        </Accordion>
       </CardContent>
     </Card>
   );
