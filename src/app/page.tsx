@@ -103,10 +103,11 @@ export default function Home() {
 
   const firestore = useFirestore();
   const wodsCollectionRef = useMemoFirebase(
-    () => (firestore ? collection(firestore, 'wods') : null),
+    () => (firestore ? collection(firestore, "wods") : null),
     [firestore]
   );
-  const { data: wods, isLoading: wodsLoading } = useCollection<Wod>(wodsCollectionRef);
+  const { data: wods, isLoading: wodsLoading } =
+    useCollection<Wod>(wodsCollectionRef);
 
   useEffect(() => {
     setIsClient(true);

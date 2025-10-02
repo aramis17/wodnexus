@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth, useFirestore, useUser } from "@/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import Link from "next/link";
 
 export default function SignupPage() {
@@ -51,16 +51,16 @@ export default function SignupPage() {
       // Create coach document in 'coaches' collection
       const coachRef = doc(firestore, "coaches", newUser.uid);
       await setDoc(coachRef, {
-        id: newUser.uid,
+        uid: newUser.uid,
         name: name,
         email: email,
+        createdAt: serverTimestamp(),
       });
 
-      // Create role document in 'roles_coach' collection
+      // Create role document in 'roles_coach' collection to identify user as a coach
       const roleRef = doc(firestore, "roles_coach", newUser.uid);
       await setDoc(roleRef, {
-        name: name,
-        email: email,
+        createdAt: serverTimestamp(),
       });
 
       toast({
@@ -68,7 +68,7 @@ export default function SignupPage() {
         description: "Tu cuenta de coach ha sido creada exitosamente.",
       });
 
-      // Redirection will be handled by the useEffect
+      // Redirection will be handled by the useEffect watching the user state
     } catch (error: any) {
       toast({
         variant: "destructive",
