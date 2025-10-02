@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { WodCalendar } from "@/components/wod-calendar";
 import { WodDisplay } from "@/components/wod-display";
 import { wods } from "@/lib/wods-data";
@@ -13,14 +13,7 @@ const getUTCDate = (dateString: string) => {
 };
 
 export default function Home() {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    // Esto se ejecuta solo en el cliente para evitar errores de hidratación.
-    setSelectedDate(new Date());
-    setIsClient(true);
-  }, []);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
 
   // Obtenemos las fechas de los WODs como fechas UTC
   const wodDates = wods.map((wod) => getUTCDate(wod.date));
@@ -45,15 +38,15 @@ export default function Home() {
       <main className="container mx-auto p-4 md:p-8">
         <div className="grid grid-cols-1 md:grid-cols-3 md:gap-8 lg:grid-cols-4 lg:gap-12">
           <div className="md:col-span-1 lg:col-span-1 mb-8 md:mb-0 md:sticky md:top-24 self-start">
-            {isClient && <WodCalendar
+            <WodCalendar
               selected={selectedDate}
               onSelect={setSelectedDate}
               wodDates={wodDates}
               className="bg-card p-2 rounded-lg shadow-sm"
-            />}
+            />
           </div>
           <div className="md:col-span-2 lg:col-span-3">
-           {isClient && <WodDisplay wod={selectedWod} selectedDate={selectedDate} />}
+           <WodDisplay wod={selectedWod} selectedDate={selectedDate} />
           </div>
         </div>
       </main>

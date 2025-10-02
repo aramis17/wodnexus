@@ -25,7 +25,7 @@ export function WodCalendar({
         onSelect={onSelect}
         locale={es}
         modifiers={{ hasWod: wodDates }}
-        defaultMonth={selected}
+        defaultMonth={selected || new Date()}
         classNames={{
             months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
             month: "space-y-4",
