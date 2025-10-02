@@ -4,8 +4,8 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: "WOD Calendar",
-  description: "Your daily workout of the day calendar.",
+  title: "WODNexus",
+  description: "WODNexus: Your daily workout of the day calendar.",
 };
 
 export default function RootLayout({

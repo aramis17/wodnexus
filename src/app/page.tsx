@@ -36,25 +36,22 @@ const DayNavigator = ({ selectedDate, onDateChange }: { selectedDate: Date, onDa
       <Button variant="ghost" size="icon" onClick={handlePreviousDay} aria-label="Día anterior">
         <ArrowLeft className="h-5 w-5" />
       </Button>
-      <div className="text-center flex flex-col items-center">
-        <div className="font-bold text-lg text-primary flex items-center gap-2">
+      <div className="text-center flex-1">
+        <div className="font-bold text-lg text-primary flex items-center justify-center gap-2">
           <span>{isToday ? "Hoy" : format(selectedDate, 'EEEE', { locale: es })}</span>
+            {!isToday && (
+              <Button variant="ghost" size="sm" onClick={handleGoToToday} aria-label="Ir a hoy" className="h-auto px-2 py-1 text-xs">
+                Hoy
+              </Button>
+            )}
         </div>
         <div className="text-sm text-muted-foreground">
           {format(selectedDate, 'd MMMM, yyyy', { locale: es })}
         </div>
       </div>
-
-      <div className="flex items-center gap-2">
-      {!isToday && (
-            <Button variant="ghost" size="sm" onClick={handleGoToToday} aria-label="Ir a hoy">
-              Hoy
-            </Button>
-          )}
-        <Button variant="ghost" size="icon" onClick={handleNextDay} aria-label="Día siguiente">
-          <ArrowRight className="h-5 w-5" />
-        </Button>
-      </div>
+      <Button variant="ghost" size="icon" onClick={handleNextDay} aria-label="Día siguiente">
+        <ArrowRight className="h-5 w-5" />
+      </Button>
     </div>
   );
 }
@@ -100,7 +97,7 @@ export default function Home() {
         <div className="container mx-auto flex items-center justify-center gap-2">
           <CalendarDays className="h-6 w-6 text-primary" />
           <h1 className="text-2xl font-headline font-bold text-center">
-            WOD Calendar
+            WODNexus
           </h1>
         </div>
       </header>
