@@ -3,12 +3,8 @@ import type { Wod } from './types';
 export const wods: Wod[] = [
   {
     "date": "2025-10-02",
-    "title": "SEMANA 1/BLOQUE 5 DE ENTRENAMIENTO",
-    "intro": [
-      "Entramos en una nueva etapa de entrenamiento.",
-      "El objetivo de esta etapa será el desarrollo de stamina (resistencia muscular) en weightlifting/barbell cycling y en endurance (Maquinas principalmente)",
-      "En gimnásticos nos enfocaremos en desarrollo de fuerza en movimiento estrictos y control motriz."
-    ],
+    "title": "SEMANA 1 DE ENTRENAMIENTO",
+    "intro": [],
     "sections": [
       {
         "title": "Warmup",
@@ -58,10 +54,8 @@ export const wods: Wod[] = [
   },
   {
     "date": "2025-10-03",
-    "title": "SEMANA 1/BLOQUE 5 DE ENTRENAMIENTO",
-    "intro": [
-      "NUEVA ETAPA DE ENTRENAMIENTO"
-    ],
+    "title": "SEMANA 1 DE ENTRENAMIENTO",
+    "intro": [],
     "sections": [
       {
         "title": "Warmup",
@@ -111,10 +105,8 @@ export const wods: Wod[] = [
   },
   {
     "date": "2025-10-04",
-    "title": "SEMANA 1/BLOQUE 5 DE ENTRENAMIENTO",
-    "intro": [
-      "NUEVA ETAPA"
-    ],
+    "title": "SEMANA 1 DE ENTRENAMIENTO",
+    "intro": [],
     "sections": [
       {
         "title": "Warmup",
@@ -172,7 +164,7 @@ export const wods: Wod[] = [
   },
   {
     "date": "2025-10-05",
-    "title": "SEMANA 1/BLOQUE 5 DE ENTRENAMIENTO",
+    "title": "SEMANA 1 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
       {
@@ -197,7 +189,7 @@ export const wods: Wod[] = [
   },
   {
     "date": "2025-10-06",
-    "title": "SEMANA 1/BLOQUE 5 DE ENTRENAMIENTO",
+    "title": "SEMANA 1 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
       {
@@ -252,7 +244,7 @@ export const wods: Wod[] = [
   },
   {
     "date": "2025-10-07",
-    "title": "SEMANA 1/BLOQUE 5 DE ENTRENAMIENTO",
+    "title": "SEMANA 1 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
       {
@@ -289,7 +281,7 @@ export const wods: Wod[] = [
   },
   {
     "date": "2025-10-09",
-    "title": "SEMANA 2/BLOQUE 5 DE ENTRENAMIENTO",
+    "title": "SEMANA 2 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
       {
@@ -334,7 +326,7 @@ export const wods: Wod[] = [
   },
   {
     "date": "2025-10-10",
-    "title": "SEMANA 2/BLOQUE 5 DE ENTRENAMIENTO",
+    "title": "SEMANA 2 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
       {
@@ -379,7 +371,7 @@ export const wods: Wod[] = [
   },
   {
     "date": "2025-10-11",
-    "title": "SEMANA 2/BLOQUE 5 DE ENTRENAMIENTO",
+    "title": "SEMANA 2 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
       {
@@ -416,11 +408,8 @@ export const wods: Wod[] = [
   },
   {
     "date": "2025-10-12",
-    "title": "SEMANA 2/BLOQUE 5 DE ENTRENAMIENTO",
-    "intro": [
-      "De preferencia realizar el trabajo en pista, algún parque o algún lugar donde no haya interferencia para correr seguido.",
-      "Se tiene que respetar los cambios de ritmo lo mas que se pueda."
-    ],
+    "title": "SEMANA 2 DE ENTRENAMIENTO",
+    "intro": [],
     "sections": [
       {
         "title": "Warmup",
@@ -444,7 +433,7 @@ export const wods: Wod[] = [
   },
   {
     "date": "2025-10-13",
-    "title": "SEMANA 2/BLOQUE 5 DE ENTRENAMIENTO",
+    "title": "SEMANA 2 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
       {
@@ -495,7 +484,7 @@ export const wods: Wod[] = [
   },
   {
     "date": "2025-10-14",
-    "title": "SEMANA 2/BLOQUE 5 DE ENTRENAMIENTO",
+    "title": "SEMANA 2 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
       {
@@ -546,7 +535,7 @@ export const wods: Wod[] = [
   },
   {
     "date": "2025-10-16",
-    "title": "SEMANA 3/BLOQUE 5 DE ENTRENAMIENTO",
+    "title": "SEMANA 3 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
       {
@@ -573,7 +562,7 @@ export const wods: Wod[] = [
   },
   {
     "date": "2025-10-17",
-    "title": "SEMANA 3/BLOQUE 5 DE ENTRENAMIENTO",
+    "title": "SEMANA 3 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
       {
@@ -624,7 +613,7 @@ export const wods: Wod[] = [
   },
   {
     "date": "2025-10-18",
-    "title": "SEMANA 3/BLOQUE 5 DE ENTRENAMIENTO",
+    "title": "SEMANA 3 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
       {
@@ -671,11 +660,8 @@ export const wods: Wod[] = [
   },
   {
     "date": "2025-10-19",
-    "title": "SEMANA 3/BLOQUE 5 DE ENTRENAMIENTO",
-    "intro": [
-      "De preferencia realizar el trabajo en pista, algún parque o algún lugar donde no haya interferencia para correr seguido.",
-      "Se tiene que respetar los cambios de ritmo lo mas que se pueda."
-    ],
+    "title": "SEMANA 3 DE ENTRENAMIENTO",
+    "intro": [],
     "sections": [
       {
         "title": "Warmup",
@@ -699,7 +685,7 @@ export const wods: Wod[] = [
   },
   {
     "date": "2025-10-20",
-    "title": "SEMANA 3/BLOQUE 5 DE ENTRENAMIENTO",
+    "title": "SEMANA 3 DE ENTRENAMIENTO",
     "intro": [],
     "sections": [
       {
