@@ -14,12 +14,12 @@ const getUTCDate = (dateString: string) => {
 
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const [isClient, setIsClient] = useState(false)
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     // Esto se ejecuta solo en el cliente para evitar errores de hidratación.
     setSelectedDate(new Date());
-    setIsClient(true)
+    setIsClient(true);
   }, []);
 
   // Obtenemos las fechas de los WODs como fechas UTC
