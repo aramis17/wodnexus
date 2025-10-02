@@ -5,25 +5,21 @@ import { WodDisplay } from "@/components/wod-display";
 import { wods } from "@/lib/wods-data";
 import { isSameDay } from "date-fns";
 import { CalendarDays } from "lucide-react";
+import { utcToZonedTime } from 'date-fns-tz';
 
-// Helper para obtener una fecha en UTC y evitar problemas de zona horaria
-const getUTCDate = (dateString: string) => {
-  const date = new Date(dateString);
-  return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-};
+const getWodForDate = (date: Date) => {
+  const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  return wods.find((wod) => {
+    // Treat WOD date string 'YYYY-MM-DD' as being in the user's timezone
+    const wodDate = utcToZonedTime(`${wod.date}T00:00:00`, userTimeZone);
+    return isSameDay(date, wodDate);
+  });
+}
 
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
 
-  // Obtenemos las fechas de los WODs como fechas UTC
-  const wodDates = wods.map((wod) => getUTCDate(wod.date));
-
-  const selectedWod = selectedDate
-    ? wods.find((wod) => {
-        const wodDate = getUTCDate(wod.date);
-        return isSameDay(wodDate, selectedDate);
-      })
-    : undefined;
+  const selectedWod = selectedDate ? getWodForDate(selectedDate) : undefined;
 
   return (
     <div className="min-h-screen bg-background text-foreground font-body">
@@ -41,7 +37,7 @@ export default function Home() {
             <WodCalendar
               selected={selectedDate}
               onSelect={setSelectedDate}
-              wodDates={wodDates}
+              wods={wods}
               className="bg-card p-2 rounded-lg shadow-sm"
             />
           </div>
