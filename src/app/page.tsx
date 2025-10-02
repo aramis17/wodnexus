@@ -3,23 +3,29 @@ import { useState, useEffect } from "react";
 import { WodCalendar } from "@/components/wod-calendar";
 import { WodDisplay } from "@/components/wod-display";
 import { wods } from "@/lib/wods-data";
-import { add, isSameDay } from "date-fns";
+import { isSameDay } from "date-fns";
 import { CalendarDays } from "lucide-react";
 
 export default function Home() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
-  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     // This will run only on the client, after hydration
+    // to ensure the date is the client's current date.
     setSelectedDate(new Date());
-    setIsClient(true);
   }, []);
 
-  const wodDates = wods.map((wod) => add(new Date(wod.date), {days: 1}));
+  // Create dates from UTC strings and zero out the time to avoid timezone issues.
+  const wodDates = wods.map((wod) => {
+    const date = new Date(wod.date + 'T00:00:00');
+    return date;
+  });
   
   const selectedWod = selectedDate
-    ? wods.find((wod) => isSameDay(add(new Date(wod.date), {days: 1}), selectedDate))
+    ? wods.find((wod) => {
+        const wodDate = new Date(wod.date + 'T00:00:00');
+        return isSameDay(wodDate, selectedDate);
+      })
     : undefined;
 
   return (
@@ -35,17 +41,15 @@ export default function Home() {
       <main className="container mx-auto p-4 md:p-8">
         <div className="grid grid-cols-1 md:grid-cols-3 md:gap-8 lg:grid-cols-4 lg:gap-12">
           <div className="md:col-span-1 lg:col-span-1 mb-8 md:mb-0 md:sticky md:top-24 self-start">
-            {isClient && (
-              <WodCalendar
-                selected={selectedDate}
-                onSelect={setSelectedDate}
-                wodDates={wodDates}
-                className="bg-card p-2 rounded-lg shadow-sm"
-              />
-            )}
+            <WodCalendar
+              selected={selectedDate}
+              onSelect={setSelectedDate}
+              wodDates={wodDates}
+              className="bg-card p-2 rounded-lg shadow-sm"
+            />
           </div>
           <div className="md:col-span-2 lg:col-span-3">
-           {isClient && <WodDisplay wod={selectedWod} selectedDate={selectedDate} />}
+           {selectedDate && <WodDisplay wod={selectedWod} selectedDate={selectedDate} />}
           </div>
         </div>
       </main>
