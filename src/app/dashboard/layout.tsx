@@ -1,3 +1,5 @@
+"use client";
+
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { Dumbbell, Users } from "lucide-react";

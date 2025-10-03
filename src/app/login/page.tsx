@@ -20,6 +20,8 @@ import Link from "next/link";
 import { doc, getDoc } from "firebase/firestore";
 import { useFirestore } from "@/firebase";
 
+export const dynamic = "force-dynamic";
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
